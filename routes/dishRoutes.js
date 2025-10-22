@@ -1,29 +1,31 @@
 const express = require("express");
-const Dish = require("../models/Dish");
+const {
+  getAllDishes,
+  addDish,
+  updateDish,
+  deleteDish,
+} = require("../services/dishService");
 const verifyToken = require("../middleware/auth");
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
-  const dishes = await Dish.find();
+  const dishes = await getAllDishes();
   res.json(dishes);
 });
 
 router.post("/", verifyToken, async (req, res) => {
-  const newDish = new Dish(req.body);
-  const savedDish = await newDish.save();
-  res.status(201).json(savedDish);
+  const saved = await addDish(req.body);
+  res.status(201).json(saved);
 });
 
 router.put("/:id", verifyToken, async (req, res) => {
-  const updatedDish = await Dish.findByIdAndUpdate(req.params.id, req.body, {
-    new: true, // returns updated dish
-  });
-  res.json(updatedDish);
+  const updated = await updateDish(req.params.id, req.body);
+  res.json(updated);
 });
 
 router.delete("/:id", verifyToken, async (req, res) => {
-  await Dish.findByIdAndDelete(req.params.id);
+  await deleteDish(req.params.id);
   res.json({ message: `Item ${req.params.id} removed.` });
 });
 
