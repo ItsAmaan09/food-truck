@@ -1,14 +1,16 @@
 require('dotenv').config();
 const express = require('express');
 const connectDB = require('./config/db');
+const cors = require('cors');
+
 const dishRoutes = require('./routes/dishRoutes');
 const userRoutes = require('./routes/userRoutes');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+app.use(cors());
 app.use(express.json());
-
 connectDB();
 
 app.get('/', (req, res) => res.send('🍔 Welcome to Food Truck API!'));
